@@ -28,7 +28,7 @@ class MyApp extends StatelessWidget {
         theme: ThemeData(
           primarySwatch: Colors.teal,
           accentColor: Colors.indigoAccent,
-          fontFamily: 'WorkSans',
+          fontFamily: 'Muli',
         ),
         home: ProductOverViewScreen(),
         routes: {

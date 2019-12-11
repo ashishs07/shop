@@ -26,6 +26,15 @@ class CartProvider with ChangeNotifier {
     return total;
   }
 
+  int get totalQuantity {
+    int total = 0;
+    _cartItems.forEach((key, cartItem) {
+      total += cartItem.quantity;
+    });
+
+    return total;
+  }
+
   void addToCart(
       {String productId, String title, double price, String imageUrl}) {
     if (_cartItems.containsKey(productId)) {

@@ -12,20 +12,46 @@ class CartItemWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       margin: const EdgeInsets.symmetric(horizontal: 6, vertical: 4),
-      child: ListTile(
-        contentPadding: const EdgeInsets.all(8.0),
-        leading: ClipRRect(
-          borderRadius: BorderRadius.circular(10),
-          child: Image.network(
-            imageUrl,
-            fit: BoxFit.scaleDown,
-            height: 100,
-            width: 100,
-          ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: <Widget>[
+            ClipRRect(
+              borderRadius: BorderRadius.circular(15),
+              child: Image.network(
+                imageUrl,
+                height: 120,
+                width: 120,
+                fit: BoxFit.cover,
+              ),
+            ),
+            Column(
+              children: <Widget>[
+                Text(
+                  title,
+                  style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      color: Theme.of(context).primaryColor),
+                ),
+                Text('\$$price x $quantity'),
+              ],
+            ),
+            Chip(
+              label: FittedBox(
+                child: Text(
+                  '\$${(price * quantity).round()}',
+                  style: TextStyle(color: Colors.white),
+                ),
+                fit: BoxFit.fitWidth,
+                alignment: Alignment.centerLeft,
+              ),
+              backgroundColor: Theme.of(context).primaryColor,
+            ),
+          ],
         ),
-        title: Text(title),
-        subtitle: Text('\$$price'),
-        trailing: Text('$quantity x     \$${price * quantity}'),
       ),
     );
   }
