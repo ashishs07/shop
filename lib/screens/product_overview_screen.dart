@@ -21,6 +21,12 @@ class _ProductOverViewScreenState extends State<ProductOverViewScreen> {
       appBar: AppBar(
         title: Text('MyShop'),
         actions: <Widget>[
+          IconButton(
+            icon: Icon(Icons.shopping_cart),
+            onPressed: () {
+              Navigator.of(context).pushNamed('/cart');
+            },
+          ),
           PopupMenuButton(
             itemBuilder: (_) => [
               PopupMenuItem(
@@ -41,7 +47,7 @@ class _ProductOverViewScreenState extends State<ProductOverViewScreen> {
                 }
               });
             },
-          )
+          ),
         ],
       ),
       drawer: Drawer(),
