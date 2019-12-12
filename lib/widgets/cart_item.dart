@@ -42,7 +42,7 @@ class CartItemWidget extends StatelessWidget {
             Chip(
               label: FittedBox(
                 child: Text(
-                  '\$${(price * quantity).round()}',
+                  '\$${(price * quantity).toStringAsFixed(2)}',
                   style: TextStyle(color: Colors.white),
                 ),
                 fit: BoxFit.fitWidth,
