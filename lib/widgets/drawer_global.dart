@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../screens/product_overview_screen.dart';
 import '../screens/cart_screen.dart';
+import '../screens/orders_screen.dart';
 
 class DrawerGlobal extends StatelessWidget {
   @override
@@ -25,6 +26,12 @@ class DrawerGlobal extends StatelessWidget {
             title: Text(CartScreen.pageName),
             onTap: () => Navigator.of(context)
                 .pushReplacementNamed(CartScreen.routeName),
+          ),
+          ListTile(
+            leading: Icon(OrdersScreen.pageIcon),
+            title: Text(OrdersScreen.pageName),
+            onTap: () => Navigator.of(context)
+                .pushReplacementNamed(OrdersScreen.routeName),
           ),
         ],
       ),

@@ -3,8 +3,8 @@ import 'package:provider/provider.dart';
 
 import '../providers/cart_provider.dart';
 
-import '../widgets/cart_top.dart';
-import '../widgets/cart_item.dart';
+import '../widgets/cart/cart_top.dart';
+import '../widgets/cart/cart_item.dart';
 import '../widgets/drawer_global.dart';
 
 class CartScreen extends StatelessWidget {

@@ -36,4 +36,8 @@ class OrderProvider with ChangeNotifier {
     }
     notifyListeners();
   }
+
+  List<CartItem> itemsInOrder(int index) {
+    return _orders[index].cartItems;
+  }
 }

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import './cart_screen.dart';
 
-import '../widgets/product_grid.dart';
+import '../widgets/homepage/product_grid.dart';
 import '../widgets/drawer_global.dart';
 
 class ProductOverViewScreen extends StatefulWidget {
@@ -40,7 +40,6 @@ class _ProductOverViewScreenState extends State<ProductOverViewScreen> {
         ],
       ),
       drawer: DrawerGlobal(),
-      drawerEdgeDragWidth: 100,
       body: ProductGrid(_favouritesSelected),
     );
   }

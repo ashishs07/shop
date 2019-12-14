@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../providers/cart_provider.dart';
-import '../providers/orders_provider.dart';
+import '../../providers/cart_provider.dart';
+import '../../providers/orders_provider.dart';
 
 class CartTopCard extends StatelessWidget {
   final int totalQuantity;
