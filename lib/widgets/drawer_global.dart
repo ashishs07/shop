@@ -1,0 +1,33 @@
+import 'package:flutter/material.dart';
+
+import '../screens/product_overview_screen.dart';
+import '../screens/cart_screen.dart';
+
+class DrawerGlobal extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Drawer(
+      child: Column(
+        children: <Widget>[
+          DrawerHeader(
+            child: Container(
+              color: Colors.red,
+            ),
+          ),
+          ListTile(
+            leading: Icon(ProductOverViewScreen.pageIcon),
+            title: Text(ProductOverViewScreen.pageName),
+            onTap: () => Navigator.of(context)
+                .pushReplacementNamed(ProductOverViewScreen.routeName),
+          ),
+          ListTile(
+            leading: Icon(CartScreen.pageIcon),
+            title: Text(CartScreen.pageName),
+            onTap: () => Navigator.of(context)
+                .pushReplacementNamed(CartScreen.routeName),
+          ),
+        ],
+      ),
+    );
+  }
+}

@@ -35,6 +35,11 @@ class CartProvider with ChangeNotifier {
     return total;
   }
 
+  void removeItem(String productId) {
+    _cartItems.remove(productId);
+    notifyListeners();
+  }
+
   void addToCart(
       {String productId, String title, double price, String imageUrl}) {
     if (_cartItems.containsKey(productId)) {
@@ -57,6 +62,11 @@ class CartProvider with ChangeNotifier {
               price: price,
               quantity: 1));
     }
+    notifyListeners();
+  }
+
+  void clearCart() {
+    _cartItems = {};
     notifyListeners();
   }
 }

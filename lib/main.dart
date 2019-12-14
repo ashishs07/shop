@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 
 import './providers/products_provider.dart';
 import './providers/cart_provider.dart';
+import './providers/orders_provider.dart';
 
 import './screens/product_overview_screen.dart';
 import './screens/product_screen.dart';
@@ -20,7 +21,10 @@ class MyApp extends StatelessWidget {
         ),
         ChangeNotifierProvider.value(
           value: CartProvider(),
-        )
+        ),
+        ChangeNotifierProvider.value(
+          value: OrderProvider(),
+        ),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
@@ -30,10 +34,10 @@ class MyApp extends StatelessWidget {
           accentColor: Colors.indigoAccent,
           fontFamily: 'Muli',
         ),
-        home: ProductOverViewScreen(),
         routes: {
+          ProductOverViewScreen.routeName: (ctx) => ProductOverViewScreen(),
           ProductScreen.routeName: (ctx) => ProductScreen(),
-          '/cart': (ctx) => CartScreen(),
+          CartScreen.routeName: (ctx) => CartScreen(),
         },
       ),
     );

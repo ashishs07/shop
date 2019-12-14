@@ -7,6 +7,31 @@ import '../providers/cart_provider.dart';
 import '../screens/product_screen.dart';
 
 class ProductItem extends StatelessWidget {
+  Widget _buildFooterLeading(Product product) {
+    return Consumer<Product>(
+      builder: (ctx, product, _) => IconButton(
+        icon:
+            Icon(product.isFavourite ? Icons.favorite : Icons.favorite_border),
+        onPressed: () => product.changeFavouriteStatus(),
+      ),
+    );
+  }
+
+  Widget _buildFooterTrailing(Product product) {
+    return Consumer<CartProvider>(
+      builder: (ctx, cartData, _) => IconButton(
+        icon: Icon(Icons.shopping_cart),
+        onPressed: () {
+          cartData.addToCart(
+              productId: product.id,
+              imageUrl: product.imageUrl,
+              title: product.title,
+              price: product.price);
+        },
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final product = Provider.of<Product>(context, listen: false);
@@ -14,34 +39,13 @@ class ProductItem extends StatelessWidget {
       borderRadius: BorderRadius.circular(15),
       child: GestureDetector(
         child: GridTile(
-          child: Image.network(
-            product.imageUrl,
-            fit: BoxFit.cover,
-          ),
+          child: Image.network(product.imageUrl, fit: BoxFit.cover),
           footer: GridTileBar(
             backgroundColor: Colors.black45,
             title: Text(product.title),
             subtitle: Text(product.price.toString()),
-            leading: Consumer<Product>(
-              builder: (ctx, product, _) => IconButton(
-                icon: Icon(product.isFavourite
-                    ? Icons.favorite
-                    : Icons.favorite_border),
-                onPressed: () => product.changeFavouriteStatus(),
-              ),
-            ),
-            trailing: Consumer<CartProvider>(
-              builder: (ctx, cartData, _) => IconButton(
-                icon: Icon(Icons.shopping_cart),
-                onPressed: () {
-                  cartData.addToCart(
-                      productId: product.id,
-                      imageUrl: product.imageUrl,
-                      title: product.title,
-                      price: product.price);
-                },
-              ),
-            ),
+            leading: _buildFooterLeading(product),
+            trailing: _buildFooterTrailing(product),
           ),
         ),
         onTap: () {
