@@ -12,7 +12,8 @@ class DrawerGlobal extends StatelessWidget {
         children: <Widget>[
           DrawerHeader(
             child: Container(
-              color: Colors.red,
+              child: Image.asset('assets/images/kriov.jpeg'),
+              color: Colors.white,
             ),
           ),
           ListTile(

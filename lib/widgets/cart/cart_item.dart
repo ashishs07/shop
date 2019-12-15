@@ -113,6 +113,28 @@ class CartItemWidget extends StatelessWidget {
       child: _buildMainCard(context),
       background: _buildDismissBackG(),
       secondaryBackground: _buildDismiss2ndBackG(),
+      confirmDismiss: (direction) {
+        return showDialog(
+            context: context,
+            child: AlertDialog(
+              title: Text('Are you sure?'),
+              content: Text('This will remove the item from Cart'),
+              actions: <Widget>[
+                FlatButton(
+                  child: Text('Yes'),
+                  onPressed: () {
+                    Navigator.of(context).pop(true);
+                  },
+                ),
+                FlatButton(
+                  child: Text('No'),
+                  onPressed: () {
+                    Navigator.of(context).pop(false);
+                  },
+                ),
+              ],
+            ));
+      },
       onDismissed: (direction) {
         if (direction == DismissDirection.endToStart) {
           Provider.of<CartProvider>(context, listen: false)

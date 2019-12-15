@@ -17,16 +17,30 @@ class ProductItem extends StatelessWidget {
     );
   }
 
-  Widget _buildFooterTrailing(Product product) {
+  Widget _buildFooterTrailing(BuildContext context, Product product) {
     return Consumer<CartProvider>(
       builder: (ctx, cartData, _) => IconButton(
-        icon: Icon(Icons.shopping_cart),
+        icon: Icon(Icons.add_shopping_cart),
         onPressed: () {
           cartData.addToCart(
               productId: product.id,
               imageUrl: product.imageUrl,
               title: product.title,
               price: product.price);
+          Scaffold.of(context).hideCurrentSnackBar();
+          Scaffold.of(context).showSnackBar(
+            SnackBar(
+              behavior: SnackBarBehavior.floating,
+              content: Text('Item added Successfully!!'),
+              duration: Duration(seconds: 2),
+              action: SnackBarAction(
+                label: 'UNDO',
+                onPressed: () {
+                  cartData.undoAction(product.id);
+                },
+              ),
+            ),
+          );
         },
       ),
     );
@@ -45,7 +59,7 @@ class ProductItem extends StatelessWidget {
             title: Text(product.title),
             subtitle: Text(product.price.toString()),
             leading: _buildFooterLeading(product),
-            trailing: _buildFooterTrailing(product),
+            trailing: _buildFooterTrailing(context, product),
           ),
         ),
         onTap: () {

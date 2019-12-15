@@ -41,7 +41,11 @@ class CartTopCard extends StatelessWidget {
               padding: const EdgeInsets.all(10),
               child: Text(
                 'ORDER NOW',
-                style: TextStyle(color: Theme.of(context).primaryColor),
+                style: TextStyle(
+                  color: Theme.of(context).accentColor,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 16,
+                ),
               ),
               onPressed: () {
                 Provider.of<OrderProvider>(context, listen: false)

@@ -31,10 +31,12 @@ class MyApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         title: 'Flutter Demo',
         theme: ThemeData(
-          primarySwatch: Colors.teal,
-          accentColor: Colors.indigoAccent,
-          fontFamily: 'Muli',
-        ),
+            primarySwatch: Colors.teal,
+            accentColor: Colors.blue,
+            fontFamily: 'Muli',
+            buttonTheme: ButtonThemeData(
+              textTheme: ButtonTextTheme.primary,
+            )),
         routes: {
           ProductOverViewScreen.routeName: (ctx) => ProductOverViewScreen(),
           ProductScreen.routeName: (ctx) => ProductScreen(),
