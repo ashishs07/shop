@@ -50,6 +50,11 @@ class ProductsProvider with ChangeNotifier {
     return _items.firstWhere((prod) => prod.id == id);
   }
 
+  void removeProduct(int index) {
+    _items.removeAt(index);
+    notifyListeners();
+  }
+
   void addProduct() {
     notifyListeners();
   }

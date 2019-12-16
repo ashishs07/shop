@@ -57,7 +57,7 @@ class ProductItem extends StatelessWidget {
           footer: GridTileBar(
             backgroundColor: Colors.black45,
             title: Text(product.title),
-            subtitle: Text(product.price.toString()),
+            subtitle: Text('\$${product.price}'),
             leading: _buildFooterLeading(product),
             trailing: _buildFooterTrailing(context, product),
           ),
