@@ -4,11 +4,32 @@ import 'package:provider/provider.dart';
 import '../../providers/products_provider.dart';
 
 import '../../screens/product_screen.dart';
+import '../../screens/product_edit_screen.dart';
 
 class ManageItem extends StatelessWidget {
   final int index;
 
   ManageItem(this.index);
+
+  Future<void> _deleteProduct(BuildContext context,
+      ProductsProvider productData, List<dynamic> productList) async {
+    Navigator.of(context).pop();
+    Scaffold.of(context).showSnackBar(
+      SnackBar(
+        content: Text('Removing Item..'),
+        duration: Duration(seconds: 6),
+      ),
+    );
+    await productData.deleteProduct(productList[index].id);
+    Scaffold.of(context).hideCurrentSnackBar();
+    Scaffold.of(context).showSnackBar(
+      SnackBar(
+        content: Text('Item Successfully Removed!!'),
+        duration: Duration(seconds: 2),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final productData = Provider.of<ProductsProvider>(context);
@@ -27,7 +48,10 @@ class ManageItem extends StatelessWidget {
                 IconButton(
                   icon: Icon(Icons.edit),
                   color: Theme.of(context).primaryColor,
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.of(context).pushNamed(ProductEditScreen.routeName,
+                        arguments: productList[index].id);
+                  },
                 ),
                 IconButton(
                   icon: Icon(Icons.delete),
@@ -41,18 +65,8 @@ class ManageItem extends StatelessWidget {
                         actions: <Widget>[
                           FlatButton(
                             child: Text('Yes'),
-                            onPressed: () {
-                              productData.removeProduct(index);
-                              Navigator.of(context).pop();
-                              Scaffold.of(context).hideCurrentSnackBar();
-                              Scaffold.of(context).showSnackBar(
-                                SnackBar(
-                                  content: Text('Item Successfully Removed!!'),
-                                  duration: Duration(seconds: 2),
-                                  //behavior: SnackBarBehavior.floating,
-                                ),
-                              );
-                            },
+                            onPressed: () => _deleteProduct(
+                                context, productData, productList),
                           ),
                           FlatButton(
                             child: Text('No'),

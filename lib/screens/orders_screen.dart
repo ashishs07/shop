@@ -13,8 +13,6 @@ class OrdersScreen extends StatelessWidget {
   static const pageIcon = Icons.credit_card;
   @override
   Widget build(BuildContext context) {
-    final orderData = Provider.of<OrderProvider>(context);
-    final orderList = orderData.orders;
     return Scaffold(
       appBar: AppBar(
         title: Text(pageName),
@@ -29,25 +27,46 @@ class OrdersScreen extends StatelessWidget {
         ],
       ),
       drawer: DrawerGlobal(),
-      body: ListView.builder(
-        itemBuilder: (ctx, index) => Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Card(
-              child: ExpansionTile(
-                  title: Text(orderList[index].id),
-                  subtitle: Text('Amount \$ ${orderList[index].totalAmount}'),
-                  children: orderData
-                      .itemsInOrder(index)
-                      .map((cartItem) => OrdersExpandable(
-                          cartItem.id,
-                          cartItem.title,
-                          cartItem.imageUrl,
-                          cartItem.price,
-                          cartItem.quantity))
-                      .toList())),
-        ),
-        itemCount: orderList.length,
+      body: FutureBuilder(
+        future:
+            Provider.of<OrderProvider>(context, listen: false).fetchOrders(),
+        builder: (ctx, dataSnapshot) {
+          if (dataSnapshot.connectionState == ConnectionState.waiting) {
+            return Center(
+              child: CircularProgressIndicator(),
+            );
+          } else {
+            if (dataSnapshot.error == null) {
+              return Consumer<OrderProvider>(
+                builder: (ctxt, orderData, child) => ListView.builder(
+                  itemBuilder: (ctx, index) => Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Card(
+                        child: ExpansionTile(
+                            backgroundColor: Colors.black26,
+                            title: Text(orderData.orders[index].id),
+                            subtitle: Text(
+                                'Amount \$ ${orderData.orders[index].totalAmount}'),
+                            children: orderData
+                                .itemsInOrder(index)
+                                .map((cartItem) => OrdersExpandable(
+                                    cartItem.id,
+                                    cartItem.title,
+                                    cartItem.imageUrl,
+                                    cartItem.price,
+                                    cartItem.quantity))
+                                .toList())),
+                  ),
+                  itemCount: orderData.orders.length,
+                ),
+              );
+            } else {
+              return Text('Error');
+            }
+          }
+        },
       ),
+      /*  */
     );
   }
 }
