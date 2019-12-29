@@ -7,8 +7,9 @@ import './product_model.dart';
 
 class ProductsProvider with ChangeNotifier {
   final String token;
+  final String userId;
 
-  ProductsProvider(this.token, this._items);
+  ProductsProvider(this.token, this.userId, this._items);
 
   List<Product> _items = [];
 
@@ -24,13 +25,20 @@ class ProductsProvider with ChangeNotifier {
     return _items.firstWhere((prod) => prod.id == id);
   }
 
-  Future<void> fetchProducts() async {
-    final url =
-        'https://shopapp-695d8.firebaseio.com/products.json?auth=$token';
+  Future<void> fetchProducts([bool filterByUser = false]) async {
+    final filterString =
+        filterByUser ? 'orderBy="creatorId"&equalTo="$userId"' : '';
+    var url =
+        'https://shopapp-695d8.firebaseio.com/products.json?auth=$token&$filterString';
     try {
       final response = await http.get(url);
       final extractedData = json.decode(response.body) as Map<String, dynamic>;
       List<Product> loadedProducts = [];
+      url =
+          'https://shopapp-695d8.firebaseio.com/favData/$userId.json?auth=$token';
+
+      final favouriteResponse = await http.get(url);
+      final favouriteData = json.decode(favouriteResponse.body);
       extractedData.forEach((prodId, prodData) {
         final product = Product(
           id: prodId,
@@ -38,7 +46,8 @@ class ProductsProvider with ChangeNotifier {
           description: prodData['description'],
           price: prodData['price'],
           imageUrl: prodData['imageUrl'],
-          isFavourite: prodData['isFavourite'],
+          isFavourite:
+              favouriteData == null ? false : favouriteData[prodId] ?? false,
         );
         loadedProducts.add(product);
         _items = loadedProducts;
@@ -62,6 +71,7 @@ class ProductsProvider with ChangeNotifier {
           'imageUrl': product.imageUrl,
           'price': product.price,
           'isFavourite': product.isFavourite,
+          'creatorId': userId,
         }),
       );
 
@@ -72,8 +82,8 @@ class ProductsProvider with ChangeNotifier {
         imageUrl: product.imageUrl,
         price: product.price,
       );
-      _items.insert(0, newProduct);
 
+      _items.insert(0, newProduct);
       notifyListeners();
     } catch (error) {
       throw error;

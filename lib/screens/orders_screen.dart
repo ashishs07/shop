@@ -61,12 +61,12 @@ class OrdersScreen extends StatelessWidget {
                 ),
               );
             } else {
-              return Text('Error');
+              print(dataSnapshot.error.toString());
+              return Center(child: Text('No Order Placed '));
             }
           }
         },
       ),
-      /*  */
     );
   }
 }

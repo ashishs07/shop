@@ -154,7 +154,7 @@ class _AuthCardState extends State<AuthCard> {
       }
       _showDialog(errorMessage);
     } catch (error) {
-      _showDialog(error);
+      _showDialog(error.toString());
     }
 
     setState(() {

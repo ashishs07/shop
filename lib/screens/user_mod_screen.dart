@@ -14,12 +14,12 @@ class UserModScreen extends StatelessWidget {
   static const pageIcon = Icons.edit;
 
   Future<void> _onRefreshProdcuts(BuildContext context) async {
-    await Provider.of<ProductsProvider>(context).fetchProducts();
+    await Provider.of<ProductsProvider>(context, listen: false)
+        .fetchProducts(true);
   }
 
   @override
   Widget build(BuildContext context) {
-    final productData = Provider.of<ProductsProvider>(context);
     return Scaffold(
       appBar: AppBar(
         title: Text(pageName),
@@ -33,12 +33,29 @@ class UserModScreen extends StatelessWidget {
         ],
       ),
       drawer: DrawerGlobal(),
-      body: RefreshIndicator(
-        onRefresh: () => _onRefreshProdcuts(context),
-        child: ListView.builder(
-          itemBuilder: (ctx, index) => ManageItem(index),
-          itemCount: productData.items.length,
-        ),
+      body: FutureBuilder(
+        future: _onRefreshProdcuts(context),
+        builder: (ctx, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(
+              child: CircularProgressIndicator(),
+            );
+          } else {
+            if (snapshot.error == null) {
+              return Consumer<ProductsProvider>(
+                builder: (ctxt, productData, child) => RefreshIndicator(
+                  onRefresh: () => _onRefreshProdcuts(context),
+                  child: ListView.builder(
+                    itemBuilder: (ctx, index) => ManageItem(index),
+                    itemCount: productData.items.length,
+                  ),
+                ),
+              );
+            } else {
+              return Text('Error');
+            }
+          }
+        },
       ),
     );
   }

@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+import '../providers/auth.dart';
 
 import '../screens/product_overview_screen.dart';
 import '../screens/cart_screen.dart';
@@ -29,9 +32,7 @@ class DrawerGlobal extends StatelessWidget {
             ),
             color: Colors.white,
           ),
-          Divider(
-            color: Colors.black54,
-          ),
+          Divider(color: Colors.black54),
           ListTile(
             leading: Icon(ProductOverViewScreen.pageIcon),
             title: Text(ProductOverViewScreen.pageName),
@@ -50,14 +51,21 @@ class DrawerGlobal extends StatelessWidget {
             onTap: () => Navigator.of(context)
                 .pushReplacementNamed(OrdersScreen.routeName),
           ),
-          Divider(
-            color: Colors.black54,
-          ),
+          Divider(color: Colors.black54),
           ListTile(
             leading: Icon(UserModScreen.pageIcon),
             title: Text(UserModScreen.pageName),
             onTap: () => Navigator.of(context)
                 .pushReplacementNamed(UserModScreen.routeName),
+          ),
+          Divider(color: Colors.black54),
+          ListTile(
+            leading: Icon(Icons.exit_to_app),
+            title: Text('Logout'),
+            onTap: () {
+              Navigator.of(context).pop();
+              Provider.of<Auth>(context, listen: false).logout();
+            },
           ),
         ],
       ),

@@ -7,6 +7,7 @@ import './providers/orders_provider.dart';
 import './providers/auth.dart';
 
 import './screens/auth_screen.dart';
+import './screens/splash_screen.dart';
 import './screens/product_overview_screen.dart';
 import './screens/product_screen.dart';
 import './screens/cart_screen.dart';
@@ -25,17 +26,17 @@ class MyApp extends StatelessWidget {
           value: Auth(),
         ),
         ChangeNotifierProxyProvider<Auth, ProductsProvider>(
-          create: (_) => ProductsProvider(null, []),
+          create: (_) => ProductsProvider(null, null, []),
           update: (_, auth, oldProducts) =>
-              ProductsProvider(auth.token, oldProducts.items),
+              ProductsProvider(auth.token, auth.userId, oldProducts.items),
         ),
         ChangeNotifierProvider.value(
           value: CartProvider(),
         ),
         ChangeNotifierProxyProvider<Auth, OrderProvider>(
-          create: (_) => OrderProvider(null, []),
+          create: (_) => OrderProvider(null, null, []),
           update: (_, auth, oldOrders) =>
-              OrderProvider(auth.token, oldOrders.orders),
+              OrderProvider(auth.token, auth.userId, oldOrders.orders),
         ),
       ],
       child: Consumer<Auth>(
@@ -48,7 +49,15 @@ class MyApp extends StatelessWidget {
             fontFamily: 'Muli',
             buttonTheme: ButtonThemeData(textTheme: ButtonTextTheme.primary),
           ),
-          home: authData.isAuth ? ProductOverViewScreen() : AuthScreen(),
+          home: authData.isAuth
+              ? ProductOverViewScreen()
+              : FutureBuilder(
+                  future: authData.tryAutoLogin(),
+                  builder: (ctxt, dataSnapshot) =>
+                      dataSnapshot.connectionState == ConnectionState.waiting
+                          ? SplashScreen()
+                          : AuthScreen(),
+                ),
           routes: {
             AuthScreen.routeName: (ctx) => AuthScreen(),
             ProductOverViewScreen.routeName: (ctx) => ProductOverViewScreen(),

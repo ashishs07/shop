@@ -1,18 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../providers/auth.dart';
 import '../../providers/product_model.dart';
 import '../../providers/cart_provider.dart';
 
 import '../../screens/product_screen.dart';
 
 class ProductItem extends StatelessWidget {
-  Widget _buildFooterLeading(Product product) {
+  Widget _buildFooterLeading(BuildContext context, Product product) {
+    final authData = Provider.of<Auth>(context, listen: false);
     return Consumer<Product>(
       builder: (ctx, product, _) => IconButton(
         icon:
             Icon(product.isFavourite ? Icons.favorite : Icons.favorite_border),
-        onPressed: () => product.changeFavouriteStatus(),
+        onPressed: () => product.changeFavouriteStatus(
+            product.id, authData.userId, authData.token),
       ),
     );
   }
@@ -58,7 +61,7 @@ class ProductItem extends StatelessWidget {
             backgroundColor: Colors.black45,
             title: Text(product.title),
             subtitle: Text('\$${product.price}'),
-            leading: _buildFooterLeading(product),
+            leading: _buildFooterLeading(context, product),
             trailing: _buildFooterTrailing(context, product),
           ),
         ),
