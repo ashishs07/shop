@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../providers/auth_provider.dart';
 import '../../providers/cart_provider.dart';
 import '../../providers/orders_provider.dart';
 
@@ -18,12 +19,20 @@ class _CartTopCardState extends State<CartTopCard> {
   var _ordering = false;
 
   Future<void> _orderNow() async {
-    final cartData = Provider.of<CartProvider>(context);
+    final cartData = Provider.of<CartProvider>(context, listen: false);
     setState(() {
       _ordering = true;
     });
-    await Provider.of<OrderProvider>(context, listen: false)
-        .addOrder(widget.totalAmount, cartData.cartItemsList);
+    final user = Provider.of<AuthProvider>(context, listen: false).user;
+    await Provider.of<OrdersProvider>(context, listen: false).placeOrder(
+        user.uid,
+        {
+          'totalAmount': cartData.amount.toString(),
+          'cartItems': cartData.totalQuantity.toString(),
+          'date': DateTime.now().toIso8601String(),
+        },
+        cartData.cartItemsList);
+
     cartData.clearCart();
     setState(() {
       _ordering = false;

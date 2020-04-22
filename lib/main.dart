@@ -1,19 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import './providers/products_provider.dart';
+import './providers/auth_provider.dart';
+import './providers/database/database_provider.dart';
 import './providers/cart_provider.dart';
 import './providers/orders_provider.dart';
-import './providers/auth.dart';
-
-import './screens/auth_screen.dart';
-import './screens/splash_screen.dart';
-import './screens/product_overview_screen.dart';
-import './screens/product_screen.dart';
-import './screens/cart_screen.dart';
-import './screens/orders_screen.dart';
-import './screens/user_mod_screen.dart';
-import './screens/product_edit_screen.dart';
+import './routes.dart';
+import './screens/screen_decider.dart';
 
 void main() => runApp(MyApp());
 
@@ -22,52 +15,22 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider.value(
-          value: Auth(),
-        ),
-        ChangeNotifierProxyProvider<Auth, ProductsProvider>(
-          create: (_) => ProductsProvider(null, null, []),
-          update: (_, auth, oldProducts) =>
-              ProductsProvider(auth.token, auth.userId, oldProducts.items),
-        ),
-        ChangeNotifierProvider.value(
-          value: CartProvider(),
-        ),
-        ChangeNotifierProxyProvider<Auth, OrderProvider>(
-          create: (_) => OrderProvider(null, null, []),
-          update: (_, auth, oldOrders) =>
-              OrderProvider(auth.token, auth.userId, oldOrders.orders),
-        ),
+        ChangeNotifierProvider(create: (ctx) => AuthProvider()),
+        Provider(create: (ctx) => DatabaseProvider()),
+        ChangeNotifierProvider(create: (ctx) => CartProvider()),
+        Provider(create: (ctx) => OrdersProvider()),
       ],
-      child: Consumer<Auth>(
-        builder: (ctx, authData, _) => MaterialApp(
-          debugShowCheckedModeBanner: false,
-          title: 'Flutter Demo',
-          theme: ThemeData(
-            primarySwatch: Colors.teal,
-            accentColor: Colors.blue,
-            fontFamily: 'Muli',
-            buttonTheme: ButtonThemeData(textTheme: ButtonTextTheme.primary),
-          ),
-          home: authData.isAuth
-              ? ProductOverViewScreen()
-              : FutureBuilder(
-                  future: authData.tryAutoLogin(),
-                  builder: (ctxt, dataSnapshot) =>
-                      dataSnapshot.connectionState == ConnectionState.waiting
-                          ? SplashScreen()
-                          : AuthScreen(),
-                ),
-          routes: {
-            AuthScreen.routeName: (ctx) => AuthScreen(),
-            ProductOverViewScreen.routeName: (ctx) => ProductOverViewScreen(),
-            ProductScreen.routeName: (ctx) => ProductScreen(),
-            CartScreen.routeName: (ctx) => CartScreen(),
-            OrdersScreen.routeName: (ctx) => OrdersScreen(),
-            UserModScreen.routeName: (ctx) => UserModScreen(),
-            ProductEditScreen.routeName: (ctx) => ProductEditScreen(),
-          },
+      child: MaterialApp(
+        debugShowCheckedModeBanner: false,
+        title: 'Flutter Demo',
+        theme: ThemeData(
+          primarySwatch: Colors.teal,
+          accentColor: Colors.blue,
+          fontFamily: 'Muli',
+          buttonTheme: ButtonThemeData(textTheme: ButtonTextTheme.primary),
         ),
+        home: ScreenDecider(),
+        routes: routes,
       ),
     );
   }

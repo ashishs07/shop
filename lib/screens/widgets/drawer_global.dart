@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../providers/auth.dart';
-
-import '../screens/product_overview_screen.dart';
-import '../screens/cart_screen.dart';
-import '../screens/orders_screen.dart';
-import '../screens/user_mod_screen.dart';
+import '../../providers/auth_provider.dart';
+import '../../screens/home_screen/home_screen.dart';
+import '../../screens/cart_screen/cart_screen.dart';
+import '../../screens/orders_screen/orders_screen.dart';
 
 class DrawerGlobal extends StatelessWidget {
   @override
@@ -34,37 +32,35 @@ class DrawerGlobal extends StatelessWidget {
           ),
           Divider(color: Colors.black54),
           ListTile(
-            leading: Icon(ProductOverViewScreen.pageIcon),
-            title: Text(ProductOverViewScreen.pageName),
-            onTap: () => Navigator.of(context)
-                .pushReplacementNamed(ProductOverViewScreen.routeName),
+            leading: Icon(HomeScreen.pageIcon),
+            title: Text(HomeScreen.pageName),
+            onTap: () => Navigator.of(context).pushNamed(HomeScreen.routeName),
           ),
           ListTile(
             leading: Icon(CartScreen.pageIcon),
             title: Text(CartScreen.pageName),
-            onTap: () => Navigator.of(context)
-                .pushReplacementNamed(CartScreen.routeName),
+            onTap: () => Navigator.of(context).pushNamed(CartScreen.routeName),
           ),
           ListTile(
             leading: Icon(OrdersScreen.pageIcon),
             title: Text(OrdersScreen.pageName),
-            onTap: () => Navigator.of(context)
-                .pushReplacementNamed(OrdersScreen.routeName),
+            onTap: () =>
+                Navigator.of(context).pushNamed(OrdersScreen.routeName),
           ),
-          Divider(color: Colors.black54),
+          /* Divider(color: Colors.black54),
           ListTile(
             leading: Icon(UserModScreen.pageIcon),
             title: Text(UserModScreen.pageName),
-            onTap: () => Navigator.of(context)
-                .pushReplacementNamed(UserModScreen.routeName),
-          ),
+            onTap: () =>
+                Navigator.of(context).pushNamed(UserModScreen.routeName),
+          ), */
           Divider(color: Colors.black54),
           ListTile(
             leading: Icon(Icons.exit_to_app),
             title: Text('Logout'),
             onTap: () {
               Navigator.of(context).pop();
-              Provider.of<Auth>(context, listen: false).logout();
+              Provider.of<AuthProvider>(context, listen: false).signOut();
             },
           ),
         ],

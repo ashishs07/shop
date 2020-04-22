@@ -1,22 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../providers/cart_provider.dart';
-
-import '../screens/product_overview_screen.dart';
-
-import '../widgets/cart/cart_top.dart';
-import '../widgets/cart/cart_item.dart';
-import '../widgets/drawer_global.dart';
+import '../../providers/cart_provider.dart';
+import './cart_item.dart';
+import './cart_top.dart';
 
 class CartScreen extends StatelessWidget {
   static const routeName = '/cart';
   static const pageName = 'My Cart';
   static const pageIcon = Icons.shopping_cart;
-
-  void _goToHomePage(BuildContext context) {
-    Navigator.of(context).pushReplacementNamed(ProductOverViewScreen.routeName);
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -25,14 +17,7 @@ class CartScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text(pageName),
-        actions: <Widget>[
-          IconButton(
-            icon: Icon(Icons.home),
-            onPressed: () => _goToHomePage(context),
-          ),
-        ],
       ),
-      drawer: DrawerGlobal(),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Column(
@@ -58,7 +43,7 @@ class CartScreen extends StatelessWidget {
                   )
                 : RaisedButton.icon(
                     label: Text('Go to Home Page'),
-                    onPressed: () => _goToHomePage(context),
+                    onPressed: () => Navigator.of(context).pop(),
                     icon: Icon(
                       Icons.reorder,
                       size: 30,

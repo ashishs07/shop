@@ -1,11 +1,11 @@
-import 'package:flutter/material.dart';
+/* import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../providers/products_provider.dart';
 
 import '../screens/product_edit_screen.dart';
 
-import '../widgets/drawer_global.dart';
+import './widgets/drawer_global.dart';
 import '../widgets/user_manage/manage_item.dart';
 
 class UserModScreen extends StatelessWidget {
@@ -60,3 +60,4 @@ class UserModScreen extends StatelessWidget {
     );
   }
 }
+ */
