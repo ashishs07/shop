@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../../providers/database/database_provider.dart';
+import '../../providers/products_provider.dart';
 import '../../models/product.dart';
 import './product_item.dart';
 
@@ -11,7 +11,7 @@ class ProductsList extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.all(10.0),
       child: StreamBuilder<List<Product>>(
-          stream: Provider.of<DatabaseProvider>(context).getProducts(),
+          stream: Provider.of<ProductsProvider>(context).getProducts(),
           builder: (context, snapshot) {
             if (snapshot.hasData) {
               final products = snapshot.data;

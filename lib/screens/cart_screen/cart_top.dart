@@ -64,13 +64,15 @@ class _CartTopCardState extends State<CartTopCard> {
                       cartCount += cartItem.quantity;
                       cartAmount += cartItem.quantity * cartItem.price;
                     });
-                    return Chip(
-                      label: Text(
-                        '\$${cartAmount.toStringAsFixed(2)}',
-                        style: TextStyle(color: Colors.white),
-                      ),
-                      backgroundColor: Theme.of(context).primaryColor,
-                    );
+                    return cartAmount != 0.0
+                        ? Chip(
+                            label: Text(
+                              '\$${cartAmount.toStringAsFixed(2)}',
+                              style: TextStyle(color: Colors.white),
+                            ),
+                            backgroundColor: Theme.of(context).primaryColor,
+                          )
+                        : Container();
                   }
                   return CircularProgressIndicator();
                 }),

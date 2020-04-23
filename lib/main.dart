@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import './providers/auth_provider.dart';
-import './providers/database/database_provider.dart';
+import './providers/products_provider.dart';
 import './providers/cart_provider.dart';
 import './providers/orders_provider.dart';
 import './routes.dart';
@@ -16,8 +16,8 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (ctx) => AuthProvider()),
-        ProxyProvider<AuthProvider, DatabaseProvider>(
-          update: (_, auth, cart) => DatabaseProvider(auth.user.uid),
+        ProxyProvider<AuthProvider, ProductsProvider>(
+          update: (_, auth, cart) => ProductsProvider(auth.user.uid),
         ),
         ProxyProvider<AuthProvider, CartProvider>(
           update: (_, auth, cart) => CartProvider(auth.user.uid),

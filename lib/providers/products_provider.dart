@@ -1,3 +1,27 @@
+import './firestore_service.dart';
+import '../models/product.dart';
+
+abstract class Products {
+  Stream<List<Product>> getProducts();
+}
+
+class ProductsProvider implements Products {
+  ProductsProvider(this.uid);
+  final String uid;
+  final _service = FirestoreService.instance;
+
+  Stream<List<Product>> getProducts() => _service.collectionStream(
+        path: 'products',
+        builder: (snapshot) => Product(
+          id: snapshot.documentID,
+          title: snapshot.data['title'],
+          description: snapshot.data['description'],
+          imageUrl: snapshot.data['imageUrl'],
+          price: snapshot.data['price'],
+        ),
+      );
+}
+
 /* import 'dart:convert';
 
 import 'package:flutter/material.dart';
