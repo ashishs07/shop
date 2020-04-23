@@ -12,15 +12,20 @@ class FirestoreService {
     @required Map<String, dynamic> data,
   }) async {
     final reference = _instance.document(path);
-    print('$path: $data');
     await reference.setData(data);
   }
 
   Stream<List<T>> collectionStream<T>({
     @required String path,
     @required T builder(DocumentSnapshot data),
+    String orderBy,
   }) {
-    final reference = _instance.collection(path);
+    Query reference;
+    reference = _instance.collection(path);
+    if (orderBy != null) {
+      reference = _instance.collection(path).orderBy('date');
+    }
+
     final snapshots = reference.snapshots();
     return snapshots.map((snapshot) =>
         snapshot.documents.map((snapshot) => builder(snapshot)).toList());

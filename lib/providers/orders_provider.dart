@@ -13,6 +13,7 @@ class OrdersProvider implements OrdersBase {
   final _instance = Firestore.instance;
 
   Stream<List<OrderItem>> getOrders() => _service.collectionStream(
+        orderBy: 'date',
         path: 'users/$uid/orders',
         builder: (snapshot) => OrderItem(
           id: snapshot.documentID,

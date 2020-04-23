@@ -39,7 +39,7 @@ class OrdersScreen extends StatelessWidget {
                           return Card(
                               child: ExpansionTile(
                             backgroundColor: Colors.black26,
-                            title: Text(orders[index].id),
+                            title: Text(orders[index].date.toString()),
                             subtitle:
                                 Text('Amount \$ ${orders[index].totalAmount}'),
                             children: children,

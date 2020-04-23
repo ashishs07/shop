@@ -40,7 +40,7 @@ class CartScreen extends StatelessWidget {
               itemCount: cartItems.length,
             );
           } else {
-            return Text('Your cart is Empty');
+            return Center(child: Text('Your cart is Empty'));
           }
         });
   }

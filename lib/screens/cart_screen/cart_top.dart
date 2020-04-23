@@ -13,21 +13,23 @@ class CartTopCard extends StatefulWidget {
 class _CartTopCardState extends State<CartTopCard> {
   var _ordering = false;
 
+  int cartCount = 0;
+  double cartAmount = 0.0;
+  List<CartItem> cartItems = [];
+
   Future<void> _orderNow() async {
     setState(() {
       _ordering = true;
     });
 
-    final cart = Provider.of<CartProvider>(context, listen: false);
-    final cartItemsData = await cart.getCartItemsData();
-
     await Provider.of<OrdersProvider>(context, listen: false).placeOrder({
-      'totalAmount': cartItemsData['amount'],
-      'cartItems': cartItemsData['quantity'],
+      'totalAmount': cartAmount.toString(),
+      'cartItems': cartCount.toString(),
       'date': DateTime.now().toIso8601String(),
-    }, (cartItemsData['list'] as List<CartItem>));
+    }, cartItems);
 
-    await cart.clearCart();
+    await Provider.of<CartProvider>(context, listen: false).clearCart();
+
     setState(() {
       _ordering = false;
     });
@@ -51,13 +53,27 @@ class _CartTopCardState extends State<CartTopCard> {
             ),
             Spacer(),
             SizedBox(width: 15),
-            /* Chip(
-              label: Text(
-                '\$${widget.totalAmount.toStringAsFixed(2)}',
-                style: TextStyle(color: Colors.white),
-              ),
-              backgroundColor: Theme.of(context).primaryColor,
-            ), */
+            StreamBuilder<List<CartItem>>(
+                stream: Provider.of<CartProvider>(context).getCartItems(),
+                builder: (context, snapshot) {
+                  if (snapshot.hasData) {
+                    cartItems = snapshot.data;
+                    cartCount = 0;
+                    cartAmount = 0;
+                    cartItems.forEach((cartItem) {
+                      cartCount += cartItem.quantity;
+                      cartAmount += cartItem.quantity * cartItem.price;
+                    });
+                    return Chip(
+                      label: Text(
+                        '\$${cartAmount.toStringAsFixed(2)}',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                      backgroundColor: Theme.of(context).primaryColor,
+                    );
+                  }
+                  return CircularProgressIndicator();
+                }),
             SizedBox(width: 10),
             _ordering
                 ? CircularProgressIndicator()

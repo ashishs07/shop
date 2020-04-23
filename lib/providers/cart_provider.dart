@@ -5,7 +5,6 @@ import '../models/product.dart';
 
 abstract class CartBase {
   Stream<List<CartItem>> getCartItems();
-  Future<Map<String, dynamic>> getCartItemsData();
   Future<void> addToCart(Product product);
   Future<void> removeitem(String cartItemId);
 }
@@ -28,7 +27,7 @@ class CartProvider implements CartBase {
         ),
       );
 
-  Future<Map<String, dynamic>> getCartItemsData() async {
+  /*  Future<Map<String, dynamic>> getCartItemsData() async {
     double amount = 0;
     int quantity = 0;
     List<CartItem> cartItems = [];
@@ -54,7 +53,7 @@ class CartProvider implements CartBase {
       'quantity': quantity.toString(),
       'list': cartItems,
     };
-  }
+  } */
 
   Future<void> clearCart() async {
     final snapshot =

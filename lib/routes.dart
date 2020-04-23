@@ -10,11 +10,4 @@ Map<String, Widget Function(BuildContext)> routes = {
   CartScreen.routeName: (ctx) => CartScreen(),
   OrdersScreen.routeName: (ctx) => OrdersScreen(),
   ProductScreen.routeName: (ctx) => ProductScreen(),
-  /*  AuthScreen.routeName: (ctx) => AuthScreen(),
-            ProductOverViewScreen.routeName: (ctx) => ProductOverViewScreen(),
-            
-            
-            
-            UserModScreen.routeName: (ctx) => UserModScreen(),
-            ProductEditScreen.routeName: (ctx) => ProductEditScreen(), */
 };
