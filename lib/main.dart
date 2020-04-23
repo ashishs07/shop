@@ -16,9 +16,15 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (ctx) => AuthProvider()),
-        Provider(create: (ctx) => DatabaseProvider()),
-        ChangeNotifierProvider(create: (ctx) => CartProvider()),
-        Provider(create: (ctx) => OrdersProvider()),
+        ProxyProvider<AuthProvider, DatabaseProvider>(
+          update: (_, auth, cart) => DatabaseProvider(auth.user.uid),
+        ),
+        ProxyProvider<AuthProvider, CartProvider>(
+          update: (_, auth, cart) => CartProvider(auth.user.uid),
+        ),
+        ProxyProvider<AuthProvider, OrdersProvider>(
+          update: (_, auth, cart) => OrdersProvider(auth.user.uid),
+        ),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,

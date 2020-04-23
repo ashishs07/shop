@@ -1,24 +1,56 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
 import '../../providers/cart_provider.dart';
+import '../../models/cart_item.dart';
 
-class CartItemWidget extends StatelessWidget {
-  final String productId;
-  final String imageUrl;
-  final String title;
-  final double price;
-  final int quantity;
+class CartCard extends StatelessWidget {
+  final CartItem cartItem;
+  CartCard(this.cartItem);
 
-  CartItemWidget(
-      this.productId, this.title, this.imageUrl, this.price, this.quantity);
+  @override
+  Widget build(BuildContext context) {
+    return Dismissible(
+      key: UniqueKey(),
+      child: _buildMainCard(context),
+      background: _buildDismissBackG(),
+      secondaryBackground: _buildDismiss2ndBackG(),
+      confirmDismiss: (direction) {
+        return showDialog(
+            context: context,
+            child: AlertDialog(
+              title: Text('Are you sure?'),
+              content: Text('This will remove the item from Cart'),
+              actions: <Widget>[
+                FlatButton(
+                  child: Text('Yes'),
+                  onPressed: () {
+                    Navigator.of(context).pop(true);
+                  },
+                ),
+                FlatButton(
+                  child: Text('No'),
+                  onPressed: () {
+                    Navigator.of(context).pop(false);
+                  },
+                ),
+              ],
+            ));
+      },
+      onDismissed: (direction) {
+        if (direction == DismissDirection.endToStart) {
+          Provider.of<CartProvider>(context, listen: false)
+              .removeitem(cartItem.id);
+        }
+      },
+    );
+  }
 
   Widget _buildImageRRect() {
     // Image ClipRRect
     return ClipRRect(
       borderRadius: BorderRadius.circular(15),
       child: Image.network(
-        imageUrl,
+        cartItem.imageUrl,
         height: 120,
         width: 120,
         fit: BoxFit.cover,
@@ -31,14 +63,14 @@ class CartItemWidget extends StatelessWidget {
     return Column(
       children: <Widget>[
         Text(
-          title,
+          cartItem.title,
           style: TextStyle(
             fontSize: 20,
             fontWeight: FontWeight.bold,
             color: Theme.of(context).primaryColor,
           ),
         ),
-        Text('\$$price x $quantity'),
+        Text('\$${cartItem.price} x ${cartItem.quantity}'),
       ],
     );
   }
@@ -48,7 +80,7 @@ class CartItemWidget extends StatelessWidget {
     return Chip(
       label: FittedBox(
         child: Text(
-          '\$${(price * quantity).toStringAsFixed(2)}',
+          '\$${(cartItem.price * cartItem.quantity).toStringAsFixed(2)}',
           style: TextStyle(color: Colors.white),
         ),
         fit: BoxFit.fitWidth,
@@ -103,44 +135,6 @@ class CartItemWidget extends StatelessWidget {
         ),
       ),
       color: Colors.red,
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Dismissible(
-      key: UniqueKey(),
-      child: _buildMainCard(context),
-      background: _buildDismissBackG(),
-      secondaryBackground: _buildDismiss2ndBackG(),
-      confirmDismiss: (direction) {
-        return showDialog(
-            context: context,
-            child: AlertDialog(
-              title: Text('Are you sure?'),
-              content: Text('This will remove the item from Cart'),
-              actions: <Widget>[
-                FlatButton(
-                  child: Text('Yes'),
-                  onPressed: () {
-                    Navigator.of(context).pop(true);
-                  },
-                ),
-                FlatButton(
-                  child: Text('No'),
-                  onPressed: () {
-                    Navigator.of(context).pop(false);
-                  },
-                ),
-              ],
-            ));
-      },
-      onDismissed: (direction) {
-        if (direction == DismissDirection.endToStart) {
-          Provider.of<CartProvider>(context, listen: false)
-              .removeItem(productId);
-        }
-      },
     );
   }
 }

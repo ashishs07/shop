@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../providers/cart_provider.dart';
-import './cart_item.dart';
+import 'package:shop/models/cart_item.dart';
+import './cart_card.dart';
 import './cart_top.dart';
 
 class CartScreen extends StatelessWidget {
@@ -12,46 +13,35 @@ class CartScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final cartData = Provider.of<CartProvider>(context);
-    final cart = cartData.cartItemsList;
     return Scaffold(
-      appBar: AppBar(
-        title: Text(pageName),
-      ),
+      appBar: AppBar(title: Text(pageName)),
       body: Padding(
-        padding: const EdgeInsets.all(8.0),
+        padding: const EdgeInsets.all(10.0),
         child: Column(
           children: <Widget>[
-            CartTopCard(
-              cartData.totalQuantity,
-              cartData.amount,
+            CartTopCard(),
+            Expanded(
+              child: _buildCartList(context),
             ),
-            if (cartData.cartItemCount == 0)
-              Text('Your Shopping cart is Empty!!'),
-            cartData.cartItemCount != 0
-                ? Expanded(
-                    child: ListView.builder(
-                      itemBuilder: (ctx, index) => CartItemWidget(
-                        cartData.cartItems.keys.toList()[index],
-                        cart[index].title,
-                        cart[index].imageUrl,
-                        cart[index].price,
-                        cart[index].quantity,
-                      ),
-                      itemCount: cartData.cartItemCount,
-                    ),
-                  )
-                : RaisedButton.icon(
-                    label: Text('Go to Home Page'),
-                    onPressed: () => Navigator.of(context).pop(),
-                    icon: Icon(
-                      Icons.reorder,
-                      size: 30,
-                    ),
-                  ),
           ],
         ),
       ),
     );
+  }
+
+  Widget _buildCartList(BuildContext context) {
+    return StreamBuilder<List<CartItem>>(
+        stream: Provider.of<CartProvider>(context).getCartItems(),
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            final cartItems = snapshot.data;
+            return ListView.builder(
+              itemBuilder: (ctx, index) => CartCard(cartItems[index]),
+              itemCount: cartItems.length,
+            );
+          } else {
+            return Text('Your cart is Empty');
+          }
+        });
   }
 }

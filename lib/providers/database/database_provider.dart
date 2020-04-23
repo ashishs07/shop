@@ -7,6 +7,8 @@ abstract class DataBase {
 }
 
 class DatabaseProvider implements DataBase {
+  DatabaseProvider(this.uid);
+  final String uid;
   final _service = FirestoreService.instance;
 
   Stream<List<Product>> getProducts() => _service.collectionStream(

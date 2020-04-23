@@ -1,16 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../../providers/auth_provider.dart';
 import '../../providers/cart_provider.dart';
 import '../../providers/orders_provider.dart';
+import '../../models/cart_item.dart';
 
 class CartTopCard extends StatefulWidget {
-  final int totalQuantity;
-  final double totalAmount;
-
-  CartTopCard(this.totalQuantity, this.totalAmount);
-
   @override
   _CartTopCardState createState() => _CartTopCardState();
 }
@@ -19,21 +14,20 @@ class _CartTopCardState extends State<CartTopCard> {
   var _ordering = false;
 
   Future<void> _orderNow() async {
-    final cartData = Provider.of<CartProvider>(context, listen: false);
     setState(() {
       _ordering = true;
     });
-    final user = Provider.of<AuthProvider>(context, listen: false).user;
-    await Provider.of<OrdersProvider>(context, listen: false).placeOrder(
-        user.uid,
-        {
-          'totalAmount': cartData.amount.toString(),
-          'cartItems': cartData.totalQuantity.toString(),
-          'date': DateTime.now().toIso8601String(),
-        },
-        cartData.cartItemsList);
 
-    cartData.clearCart();
+    final cart = Provider.of<CartProvider>(context, listen: false);
+    final cartItemsData = await cart.getCartItemsData();
+
+    await Provider.of<OrdersProvider>(context, listen: false).placeOrder({
+      'totalAmount': cartItemsData['amount'],
+      'cartItems': cartItemsData['quantity'],
+      'date': DateTime.now().toIso8601String(),
+    }, (cartItemsData['list'] as List<CartItem>));
+
+    await cart.clearCart();
     setState(() {
       _ordering = false;
     });
@@ -57,13 +51,13 @@ class _CartTopCardState extends State<CartTopCard> {
             ),
             Spacer(),
             SizedBox(width: 15),
-            Chip(
+            /* Chip(
               label: Text(
                 '\$${widget.totalAmount.toStringAsFixed(2)}',
                 style: TextStyle(color: Colors.white),
               ),
               backgroundColor: Theme.of(context).primaryColor,
-            ),
+            ), */
             SizedBox(width: 10),
             _ordering
                 ? CircularProgressIndicator()

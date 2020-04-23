@@ -9,7 +9,7 @@ class ProductsList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(8.0),
+      padding: const EdgeInsets.all(10.0),
       child: StreamBuilder<List<Product>>(
           stream: Provider.of<DatabaseProvider>(context).getProducts(),
           builder: (context, snapshot) {
@@ -26,7 +26,7 @@ class ProductsList extends StatelessWidget {
                 ),
               );
             }
-            return CircularProgressIndicator();
+            return Center(child: CircularProgressIndicator());
           }),
     );
   }

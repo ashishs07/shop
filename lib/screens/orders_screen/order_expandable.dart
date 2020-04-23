@@ -10,6 +10,29 @@ class OrdersExpandable extends StatelessWidget {
   OrdersExpandable(
       this.productId, this.title, this.imageUrl, this.price, this.quantity);
 
+  @override
+  Widget build(BuildContext context) {
+    return _buildMainCard(context);
+  }
+
+  Widget _buildMainCard(BuildContext context) {
+    // Main Card
+    return Card(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: <Widget>[
+            _buildImageRRect(),
+            _buildTitlePQColumn(context),
+            _buildTotalPriceChip(context),
+          ],
+        ),
+      ),
+    );
+  }
+
   Widget _buildImageRRect() {
     // Image ClipRRect
     return ClipRRect(
@@ -53,28 +76,5 @@ class OrdersExpandable extends StatelessWidget {
       ),
       backgroundColor: Theme.of(context).primaryColor,
     );
-  }
-
-  Widget _buildMainCard(BuildContext context) {
-    // Main Card
-    return Card(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: <Widget>[
-            _buildImageRRect(),
-            _buildTitlePQColumn(context),
-            _buildTotalPriceChip(context),
-          ],
-        ),
-      ),
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return _buildMainCard(context);
   }
 }
