@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../providers/auth_provider.dart';
+import '../screen_decider.dart';
 import '../../screens/home_screen/home_screen.dart';
 import '../../screens/cart_screen/cart_screen.dart';
 import '../../screens/orders_screen/orders_screen.dart';
@@ -34,7 +35,8 @@ class DrawerGlobal extends StatelessWidget {
           ListTile(
             leading: Icon(HomeScreen.pageIcon),
             title: Text(HomeScreen.pageName),
-            onTap: () => Navigator.of(context).pushNamed(HomeScreen.routeName),
+            onTap: () =>
+                Navigator.of(context).pushNamed(ScreenDecider.routeName),
           ),
           ListTile(
             leading: Icon(CartScreen.pageIcon),
@@ -47,20 +49,15 @@ class DrawerGlobal extends StatelessWidget {
             onTap: () =>
                 Navigator.of(context).pushNamed(OrdersScreen.routeName),
           ),
-          /* Divider(color: Colors.black54),
-          ListTile(
-            leading: Icon(UserModScreen.pageIcon),
-            title: Text(UserModScreen.pageName),
-            onTap: () =>
-                Navigator.of(context).pushNamed(UserModScreen.routeName),
-          ), */
           Divider(color: Colors.black54),
           ListTile(
             leading: Icon(Icons.exit_to_app),
             title: Text('Logout'),
-            onTap: () {
+            onTap: () async {
               Navigator.of(context).pop();
-              Provider.of<AuthProvider>(context, listen: false).signOut();
+              await Provider.of<AuthProvider>(context, listen: false).signOut();
+              //Navigator.of(context)
+              //    .pushReplacementNamed(ScreenDecider.routeName);
             },
           ),
         ],

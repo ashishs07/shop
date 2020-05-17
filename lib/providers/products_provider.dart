@@ -1,13 +1,14 @@
 import './firestore_service.dart';
 import '../models/product.dart';
+import '../models/user.dart';
 
 abstract class Products {
   Stream<List<Product>> getProducts();
 }
 
 class ProductsProvider implements Products {
-  ProductsProvider(this.uid);
-  final String uid;
+  ProductsProvider(this.user);
+  final User user;
   final _service = FirestoreService.instance;
 
   Stream<List<Product>> getProducts() => _service.collectionStream(

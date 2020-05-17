@@ -6,6 +6,7 @@ import './auth_screen/auth_screen.dart';
 import '../screens/home_screen/home_screen.dart';
 
 class ScreenDecider extends StatefulWidget {
+  static const routeName = '/decider';
   @override
   _ScreenDeciderState createState() => _ScreenDeciderState();
 }

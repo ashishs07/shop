@@ -17,13 +17,13 @@ class MyApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider(create: (ctx) => AuthProvider()),
         ProxyProvider<AuthProvider, ProductsProvider>(
-          update: (_, auth, cart) => ProductsProvider(auth.user.uid),
+          update: (_, auth, cart) => ProductsProvider(auth.user),
         ),
         ProxyProvider<AuthProvider, CartProvider>(
-          update: (_, auth, cart) => CartProvider(auth.user.uid),
+          update: (_, auth, cart) => CartProvider(auth.user),
         ),
         ProxyProvider<AuthProvider, OrdersProvider>(
-          update: (_, auth, cart) => OrdersProvider(auth.user.uid),
+          update: (_, auth, cart) => OrdersProvider(auth.user),
         ),
       ],
       child: MaterialApp(

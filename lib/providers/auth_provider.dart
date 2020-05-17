@@ -82,6 +82,7 @@ class AuthProvider extends ChangeNotifier implements Auth {
 
   Future<void> signOut() async {
     await _firebaseAuthService.signOut();
+    _user = null;
     notifyListeners();
   }
 }
