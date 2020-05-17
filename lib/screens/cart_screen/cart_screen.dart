@@ -34,13 +34,17 @@ class CartScreen extends StatelessWidget {
         stream: Provider.of<CartProvider>(context).getCartItems(),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
-            final cartItems = snapshot.data;
-            return ListView.builder(
-              itemBuilder: (ctx, index) => CartCard(cartItems[index]),
-              itemCount: cartItems.length,
-            );
+            if (snapshot.data.length != 0) {
+              final cartItems = snapshot.data;
+              return ListView.builder(
+                itemBuilder: (ctx, index) => CartCard(cartItems[index]),
+                itemCount: cartItems.length,
+              );
+            } else {
+              return Center(child: Text('Your cart is Empty'));
+            }
           } else {
-            return Center(child: Text('Your cart is Empty'));
+            return Center(child: CircularProgressIndicator());
           }
         });
   }

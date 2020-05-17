@@ -23,10 +23,14 @@ class OrdersScreen extends StatelessWidget {
         stream: Provider.of<OrdersProvider>(context).getOrders(),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
-            final orders = snapshot.data.reversed.toList();
-            return _buildOrderDataStream(context, orders);
+            if (snapshot.data.length != 0) {
+              final orders = snapshot.data.reversed.toList();
+              return _buildOrderDataStream(context, orders);
+            } else {
+              return Center(child: Text('No Orders'));
+            }
           } else {
-            return Center(child: Text('No Orders'));
+            return Center(child: CircularProgressIndicator());
           }
         });
   }
@@ -38,9 +42,9 @@ class OrdersScreen extends StatelessWidget {
         child: StreamBuilder<List<CartItem>>(
             stream: Provider.of<OrdersProvider>(context)
                 .getOrderItems(orders[index].id),
-            builder: (context, snapshot2) {
-              if (snapshot2.hasData) {
-                final items = snapshot2.data;
+            builder: (context, snapshot) {
+              if (snapshot.hasData) {
+                final items = snapshot.data;
                 final children = items
                     .map((cartItem) => OrdersExpandable(
                         cartItem.id,
@@ -56,8 +60,9 @@ class OrdersScreen extends StatelessWidget {
                   subtitle: Text('Amount \$ ${orders[index].totalAmount}'),
                   children: children,
                 ));
+              } else {
+                return Center(child: CircularProgressIndicator());
               }
-              return CircularProgressIndicator();
             }),
       ),
       itemCount: orders.length,

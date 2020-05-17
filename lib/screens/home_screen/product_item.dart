@@ -20,7 +20,6 @@ class ProductItem extends StatelessWidget {
             backgroundColor: Colors.black45,
             title: Text(product.title),
             subtitle: Text('\$${product.price}'),
-            leading: _buildFooterLeading(context, product),
             trailing: _buildFooterTrailing(context, product),
           ),
         ),
@@ -29,13 +28,6 @@ class ProductItem extends StatelessWidget {
               .pushNamed(ProductScreen.routeName, arguments: product);
         },
       ),
-    );
-  }
-
-  Widget _buildFooterLeading(BuildContext context, Product product) {
-    return IconButton(
-      icon: Icon(Icons.favorite),
-      onPressed: () {},
     );
   }
 
@@ -54,15 +46,9 @@ class ProductItem extends StatelessWidget {
         Scaffold.of(context).hideCurrentSnackBar();
         Scaffold.of(context).showSnackBar(
           SnackBar(
-            behavior: SnackBarBehavior.floating,
+            behavior: SnackBarBehavior.fixed,
             content: Text('Item added Successfully!!'),
-            duration: Duration(seconds: 2),
-            action: SnackBarAction(
-              label: 'UNDO',
-              onPressed: () {
-                //cartData.undoAction(product.id);
-              },
-            ),
+            duration: Duration(seconds: 1),
           ),
         );
       },

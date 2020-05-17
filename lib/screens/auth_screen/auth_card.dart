@@ -7,10 +7,6 @@ import '../../providers/auth_provider.dart';
 enum AuthMode { Signup, Login }
 
 class AuthCard extends StatefulWidget {
-  const AuthCard({
-    Key key,
-  }) : super(key: key);
-
   @override
   _AuthCardState createState() => _AuthCardState();
 }
@@ -42,15 +38,14 @@ class _AuthCardState extends State<AuthCard> {
   }
 
   Future<void> _submit() async {
-    if (!_formKey.currentState.validate()) {
-      // Invalid!
-      return;
-    }
+    if (!_formKey.currentState.validate()) return;
+
     _formKey.currentState.save();
     setState(() {
       _isLoading = true;
     });
     try {
+      FocusScope.of(context).unfocus();
       if (_authMode == AuthMode.Login) {
         await Provider.of<AuthProvider>(context, listen: false)
             .signInWithEmailAndPassword(
@@ -61,21 +56,7 @@ class _AuthCardState extends State<AuthCard> {
                 _emailTextCont.text, _passTextCont.text);
       }
     } on HttpException catch (error) {
-      var errorMessage = 'Authentication Failed';
-      if (error.toString().contains('EMAIL_EXISTS')) {
-        errorMessage = 'This email already exists';
-      } else if (error.toString().contains('INVALID_EMAIL')) {
-        errorMessage = 'This is not a valid email.';
-      } else if (error.toString().contains('EMAIL_NOT_FOUND')) {
-        errorMessage = 'This email is not registered.';
-      } else if (error.toString().contains('INVALID_PASSWORD')) {
-        errorMessage = 'Wrong Password Entered!';
-      } else if (error.toString().contains('USER_DISABLED')) {
-        errorMessage = 'You have been Disabled by ADMIN !';
-      } else if (error.toString().contains('WEAK_PASSWORD')) {
-        errorMessage = 'Your password is too weak.';
-      }
-      _showDialog(errorMessage);
+      _showDialog(error.message);
     } catch (error) {
       _showDialog(error.toString());
     }
@@ -86,6 +67,8 @@ class _AuthCardState extends State<AuthCard> {
   }
 
   void _switchAuthMode() {
+    _emailTextCont.clear();
+    _passTextCont.clear();
     if (_authMode == AuthMode.Login) {
       setState(() {
         _authMode = AuthMode.Signup;
@@ -116,79 +99,94 @@ class _AuthCardState extends State<AuthCard> {
           child: SingleChildScrollView(
             child: Column(
               children: <Widget>[
-                TextFormField(
-                  decoration: InputDecoration(labelText: 'E-Mail'),
-                  keyboardType: TextInputType.emailAddress,
-                  controller: _emailTextCont,
-                  validator: (value) {
-                    if (value.isEmpty || !value.contains('@')) {
-                      return 'Invalid email!';
-                    }
-                    return null;
-                  },
-                  onSaved: (value) {
-                    _emailTextCont.text = value;
-                  },
-                ),
-                TextFormField(
-                  decoration: InputDecoration(labelText: 'Password'),
-                  obscureText: true,
-                  controller: _passTextCont,
-                  validator: (value) {
-                    if (value.isEmpty || value.length < 5) {
-                      return 'Password is too short!';
-                    }
-                    return null;
-                  },
-                  onSaved: (value) {
-                    _passTextCont.text = value;
-                  },
-                ),
-                if (_authMode == AuthMode.Signup)
-                  TextFormField(
-                    enabled: _authMode == AuthMode.Signup,
-                    decoration: InputDecoration(labelText: 'Confirm Password'),
-                    obscureText: true,
-                    validator: _authMode == AuthMode.Signup
-                        ? (value) {
-                            if (value != _passTextCont.text) {
-                              return 'Passwords do not match!';
-                            }
-                            return null;
-                          }
-                        : null,
-                  ),
-                SizedBox(
-                  height: 20,
-                ),
-                if (_isLoading)
-                  CircularProgressIndicator()
-                else
-                  RaisedButton(
-                    child:
-                        Text(_authMode == AuthMode.Login ? 'LOGIN' : 'SIGN UP'),
-                    onPressed: _submit,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(30),
-                    ),
-                    padding:
-                        EdgeInsets.symmetric(horizontal: 30.0, vertical: 8.0),
-                    color: Theme.of(context).primaryColor,
-                    textColor: Theme.of(context).primaryTextTheme.button.color,
-                  ),
-                FlatButton(
-                  child: Text(
-                      '${_authMode == AuthMode.Login ? 'SIGNUP' : 'LOGIN'} INSTEAD'),
-                  onPressed: _switchAuthMode,
-                  padding: EdgeInsets.symmetric(horizontal: 30.0, vertical: 4),
-                  materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                  textColor: Theme.of(context).primaryColor,
-                ),
+                _buildEmailTTF(),
+                _buildPasswordTTF(),
+                if (_authMode == AuthMode.Signup) _buildConfPassTTF(),
+                SizedBox(height: 20),
+                _buildSubmitButton(),
+                _buildInsteadButton(),
               ],
             ),
           ),
         ),
       ),
+    );
+  }
+
+  Widget _buildEmailTTF() {
+    return TextFormField(
+      decoration: InputDecoration(labelText: 'E-Mail'),
+      keyboardType: TextInputType.emailAddress,
+      controller: _emailTextCont,
+      validator: (value) {
+        if (value.isEmpty || !value.contains('@')) {
+          return 'Invalid email!';
+        }
+        return null;
+      },
+      onSaved: (value) {
+        _emailTextCont.text = value;
+      },
+    );
+  }
+
+  Widget _buildPasswordTTF() {
+    return TextFormField(
+      decoration: InputDecoration(labelText: 'Password'),
+      obscureText: true,
+      controller: _passTextCont,
+      validator: (value) {
+        if (value.isEmpty || value.length < 5) {
+          return 'Password is too short!';
+        }
+        return null;
+      },
+      onSaved: (value) {
+        _passTextCont.text = value;
+      },
+    );
+  }
+
+  Widget _buildConfPassTTF() {
+    return TextFormField(
+      enabled: _authMode == AuthMode.Signup,
+      decoration: InputDecoration(labelText: 'Confirm Password'),
+      obscureText: true,
+      validator: _authMode == AuthMode.Signup
+          ? (value) {
+              if (value != _passTextCont.text) {
+                return 'Passwords do not match!';
+              }
+              return null;
+            }
+          : null,
+    );
+  }
+
+  Widget _buildSubmitButton() {
+    if (_isLoading)
+      return CircularProgressIndicator();
+    else
+      return RaisedButton(
+        child: Text(_authMode == AuthMode.Login ? 'LOGIN' : 'SIGN UP'),
+        onPressed: _submit,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(30),
+        ),
+        padding: EdgeInsets.symmetric(horizontal: 30.0, vertical: 8.0),
+        color: Theme.of(context).primaryColor,
+        textColor: Theme.of(context).primaryTextTheme.button.color,
+      );
+  }
+
+  Widget _buildInsteadButton() {
+    return FlatButton(
+      child:
+          Text('${_authMode == AuthMode.Login ? 'SIGNUP' : 'LOGIN'} INSTEAD'),
+      onPressed: _switchAuthMode,
+      padding: EdgeInsets.symmetric(horizontal: 30.0, vertical: 4),
+      materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+      textColor: Theme.of(context).primaryColor,
     );
   }
 }
