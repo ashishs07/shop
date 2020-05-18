@@ -6,6 +6,7 @@ import '../screen_decider.dart';
 import '../../screens/home_screen/home_screen.dart';
 import '../../screens/cart_screen/cart_screen.dart';
 import '../../screens/orders_screen/orders_screen.dart';
+import '../myProducts_screen/myProducts_screen.dart';
 
 class DrawerGlobal extends StatelessWidget {
   @override
@@ -51,13 +52,18 @@ class DrawerGlobal extends StatelessWidget {
           ),
           Divider(color: Colors.black54),
           ListTile(
+            leading: Icon(MyProductScreen.pageIcon),
+            title: Text(MyProductScreen.pageName),
+            onTap: () =>
+                Navigator.of(context).pushNamed(MyProductScreen.routeName),
+          ),
+          Divider(color: Colors.black54),
+          ListTile(
             leading: Icon(Icons.exit_to_app),
             title: Text('Logout'),
             onTap: () async {
               Navigator.of(context).pop();
               await Provider.of<AuthProvider>(context, listen: false).signOut();
-              //Navigator.of(context)
-              //    .pushReplacementNamed(ScreenDecider.routeName);
             },
           ),
         ],

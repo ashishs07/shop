@@ -16,7 +16,7 @@ class OrdersProvider implements OrdersBase {
   final _service = FirestoreService.instance;
   final _instance = Firestore.instance;
 
-  Stream<List<OrderItem>> getOrders() => _service.collectionStream(
+  Stream<List<OrderItem>> getOrders() => _service.collectionStreamOrderBy(
         orderBy: 'date',
         path: 'users/${user.uid}/orders',
         builder: (snapshot) => OrderItem(
