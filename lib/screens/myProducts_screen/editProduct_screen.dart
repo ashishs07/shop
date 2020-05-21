@@ -48,6 +48,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
 
       await Provider.of<ProductsProvider>(context, listen: false)
           .updateProduct(newProduct);
+      Navigator.of(context).pop('edit');
     } else {
       final newProduct = Product(
         id: DateTime.now().toIso8601String(),
@@ -58,11 +59,9 @@ class _EditProductScreenState extends State<EditProductScreen> {
       );
       await Provider.of<ProductsProvider>(context, listen: false)
           .addProduct(newProduct);
+      Navigator.of(context).pop('new');
     }
-
-    setState(() {
-      _isPressed = false;
-    });
+    _isPressed = false;
   }
 
   bool _once = false;

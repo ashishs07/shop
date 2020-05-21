@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import './firestore_service.dart';
 import '../models/cart_item.dart';
 import '../models/product.dart';
@@ -15,7 +14,6 @@ class CartProvider implements CartBase {
   final User user;
 
   final _service = FirestoreService.instance;
-  final _instance = Firestore.instance;
 
   Stream<List<CartItem>> getCartItems() => _service.collectionStream(
         path: 'users/${user.uid}/cart',
@@ -28,63 +26,28 @@ class CartProvider implements CartBase {
         ),
       );
 
-  /*  Future<Map<String, dynamic>> getCartItemsData() async {
-    double amount = 0;
-    int quantity = 0;
-    List<CartItem> cartItems = [];
-    final snapshot =
-        await _instance.collection('users/$uid/cart').getDocuments();
-    final documents = snapshot.documents;
-
-    documents.forEach((document) {
-      cartItems.add(CartItem(
-        id: document.documentID,
-        title: document.data['title'],
-        imageUrl: document.data['imageUrl'],
-        quantity: int.parse(document.data['quantity']),
-        price: double.parse(document.data['price']),
-      ));
-      quantity += int.parse(document.data['quantity']);
-      amount += double.parse(document.data['price']) *
-          int.parse(document.data['quantity']);
-    });
-
-    return {
-      'amount': amount.toString(),
-      'quantity': quantity.toString(),
-      'list': cartItems,
-    };
-  } */
-
   Future<void> clearCart() async {
     final snapshot =
-        await _instance.collection('users/${user.uid}/cart').getDocuments();
+        await _service.getDocuments(collectionPath: 'users/${user.uid}/cart');
     final documents = snapshot.documents;
 
-    documents.forEach((document) async => await _instance
-        .collection('users/${user.uid}/cart')
-        .document('${document.documentID}')
-        .delete());
+    documents.forEach((document) async => await _service.deleteDocument(
+        documentPath: 'users/${user.uid}/cart/${document.documentID}'));
   }
 
   Future<void> addToCart(Product product) async {
-    final documentRef = await _instance
-        .collection('users/${user.uid}/cart')
-        .document(product.id)
-        .get();
+    final documentRef =
+        await _service.getData(docPath: 'users/${user.uid}/cart/${product.id}');
+
     if (documentRef.exists) {
       var quantity = int.parse(documentRef.data['quantity']);
       quantity += 1;
-
-      await _instance
-          .collection('users/${user.uid}/cart')
-          .document(product.id)
-          .updateData({'quantity': quantity.toString()});
+      await _service.updateData(
+          docPath: 'users/${user.uid}/cart/${product.id}',
+          data: {'quantity': quantity.toString()});
     } else {
-      await _instance
-          .collection('users/${user.uid}/cart')
-          .document(product.id)
-          .setData({
+      await _service
+          .setData(docPath: 'users/${user.uid}/cart/${product.id}', data: {
         'title': product.title,
         'imageUrl': product.imageUrl,
         'price': product.price,
@@ -94,9 +57,7 @@ class CartProvider implements CartBase {
   }
 
   Future<void> removeitem(String cartItemId) async {
-    await _instance
-        .collection('users/${user.uid}/cart')
-        .document(cartItemId)
-        .delete();
+    await _service.deleteDocument(
+        documentPath: 'users/${user.uid}/cart/$cartItemId');
   }
 }

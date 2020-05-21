@@ -4,7 +4,6 @@ import 'package:provider/provider.dart';
 import '../../providers/products_provider.dart';
 import '../../models/product.dart';
 import './editProduct_screen.dart';
-
 import './myProduct_item.dart';
 
 class MyProductScreen extends StatelessWidget {
@@ -12,20 +11,13 @@ class MyProductScreen extends StatelessWidget {
   static const pageName = 'Manage';
   static const pageIcon = Icons.edit;
 
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(pageName),
-        actions: <Widget>[
-          IconButton(
-            icon: Icon(Icons.add),
-            onPressed: () {
-              Navigator.of(context).pushNamed(EditProductScreen.routeName);
-            },
-          )
-        ],
-      ),
+      key: _scaffoldKey,
+      appBar: AppBar(title: Text(pageName)),
       body: StreamBuilder<List<Product>>(
           stream: Provider.of<ProductsProvider>(context).getUserProducts(),
           builder: (context, snapshot) {
@@ -43,6 +35,20 @@ class MyProductScreen extends StatelessWidget {
               return Center(child: CircularProgressIndicator());
             }
           }),
+      floatingActionButton: FloatingActionButton(
+        child: Icon(Icons.add),
+        backgroundColor: Theme.of(context).primaryColor,
+        onPressed: () async {
+          var mod = await Navigator.of(context)
+              .pushNamed(EditProductScreen.routeName);
+          if (mod == null) return;
+          _scaffoldKey.currentState
+            ..hideCurrentSnackBar()
+            ..showSnackBar(SnackBar(
+              content: Text(mod),
+            ));
+        },
+      ),
     );
   }
 }

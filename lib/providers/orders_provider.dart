@@ -1,5 +1,4 @@
 import './firestore_service.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import '../models/order_item.dart';
 import '../models/cart_item.dart';
 import '../models/user.dart';
@@ -13,8 +12,8 @@ abstract class OrdersBase {
 class OrdersProvider implements OrdersBase {
   OrdersProvider(this.user);
   final User user;
+
   final _service = FirestoreService.instance;
-  final _instance = Firestore.instance;
 
   Stream<List<OrderItem>> getOrders() => _service.collectionStreamOrderBy(
         orderBy: 'date',
@@ -41,16 +40,16 @@ class OrdersProvider implements OrdersBase {
 
   Future<void> placeOrder(
       Map<String, dynamic> data, List<CartItem> cartList) async {
-    final reference =
-        await _instance.collection('users/${user.uid}/orders').add(data);
-    cartList.forEach((item) async => await _instance
-            .collection(
-                'users/${user.uid}/orders/${reference.documentID}/items')
-            .add({
-          'title': item.title,
-          'imageUrl': item.imageUrl,
-          'price': item.price,
-          'quantity': item.quantity,
-        }));
+    final reference = await _service.addData(
+        collPath: 'users/${user.uid}/orders', data: data);
+    cartList.forEach((item) async => await _service.addData(
+          collPath: 'users/${user.uid}/orders/${reference.documentID}/items',
+          data: {
+            'title': item.title,
+            'imageUrl': item.imageUrl,
+            'price': item.price,
+            'quantity': item.quantity,
+          },
+        ));
   }
 }

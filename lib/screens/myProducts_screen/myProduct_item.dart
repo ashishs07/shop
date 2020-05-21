@@ -41,9 +41,13 @@ class MyProductItem extends StatelessWidget {
     return IconButton(
       icon: Icon(Icons.edit),
       color: Theme.of(context).primaryColor,
-      onPressed: () {
-        Navigator.of(context)
+      onPressed: () async {
+        var mod = await Navigator.of(context)
             .pushNamed(EditProductScreen.routeName, arguments: product);
+        if (mod == null) return;
+        Scaffold.of(context)
+          ..hideCurrentSnackBar()
+          ..showSnackBar(SnackBar(content: Text(mod)));
       },
     );
   }

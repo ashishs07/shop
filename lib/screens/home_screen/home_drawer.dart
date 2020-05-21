@@ -8,7 +8,7 @@ import '../../screens/cart_screen/cart_screen.dart';
 import '../../screens/orders_screen/orders_screen.dart';
 import '../myProducts_screen/myProducts_screen.dart';
 
-class DrawerGlobal extends StatelessWidget {
+class HomeDrawer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Drawer(

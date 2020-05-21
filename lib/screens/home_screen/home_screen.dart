@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../cart_screen/cart_screen.dart';
 import './products_list.dart';
-import '../widgets/drawer_global.dart';
+import './home_drawer.dart';
 
 class HomeScreen extends StatefulWidget {
   static const routeName = '/home';
@@ -28,7 +28,7 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ],
       ),
-      drawer: DrawerGlobal(),
+      drawer: HomeDrawer(),
       body: ProductsList(),
     );
   }

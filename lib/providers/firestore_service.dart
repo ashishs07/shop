@@ -7,12 +7,12 @@ class FirestoreService {
 
   final _instance = Firestore.instance;
 
-  Future<void> addData({
+  Future<DocumentReference> addData({
     @required String collPath,
     @required Map<String, dynamic> data,
   }) async {
-    final reference = _instance.collection(collPath);
-    await reference.add(data);
+    final document = await _instance.collection(collPath).add(data);
+    return document;
   }
 
   Future<void> setData({
@@ -31,10 +31,24 @@ class FirestoreService {
     await reference.setData(data, merge: true);
   }
 
+  Future<DocumentSnapshot> getData({
+    @required String docPath,
+  }) async {
+    final document = await _instance.document(docPath).get();
+    return document;
+  }
+
   Future<void> deleteDocument({
     @required String documentPath,
   }) async {
     await _instance.document(documentPath).delete();
+  }
+
+  Future<QuerySnapshot> getDocuments({
+    @required String collectionPath,
+  }) async {
+    final snapshot = await _instance.collection(collectionPath).getDocuments();
+    return snapshot;
   }
 
   Stream<List<T>> collectionStreamWhere<T>({
